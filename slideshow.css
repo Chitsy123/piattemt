@@ -1,0 +1,64 @@
+
+    #backButton_ppt, #addImagesButton_ppt, #playSlideshowButton_ppt {
+      margin-top: 20px;
+      cursor: pointer;
+    
+  
+      padding: 10px;
+      border: none;
+      border: 2px solid #010101;
+      border-radius: 5px; /* Rounded corners */
+      font-size: 16px;
+      display: inline-block;
+      margin-right: 10px;
+
+      
+  background-color: #ffffff; /* Primary button color */
+  color: #000000; /* Text color */
+  
+ 
+  
+  
+  cursor: pointer;
+ 
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+
+    
+   
+    }
+   #playSlideshowButton_ppt:hover
+    {
+      background-color: #8c8c8b; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+
+    }
+    #backButton_ppt:hover
+    {
+      background-color: #8c8c8b; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+
+    }
+    #addImagesButton_ppt:hover
+    {
+      background-color: #8c8c8b; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+
+    }
+    
+
+    input[type="file"] {
+      display: none;
+    }
+
+    #imageContainer {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .imageSlide {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }

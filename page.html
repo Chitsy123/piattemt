@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Page</title>
+    <!-- Your existing head content -->
+   
+    <link rel="stylesheet" type="text/css" href="slideshow.css">
+   
+    <style>
+         body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+       
+
+        #unique-heading {
+            border: 2px solid #000000;
+            background-color: #fafcfa;
+            color: rgb(16, 16, 16);
+            padding: 10px;
+        }
+
+        #buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50%;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #fcfbfb;
+            color: #090909;
+            border: none;
+            border: 4px solid #0c0c0c;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-size: 20px;
+            width: 400px;
+            height: 100px;
+            margin: 200px;
+        }
+
+        .btn:hover {
+            background-color: #8c8c8b;
+            transform: translateY(-2px);
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        #controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+        }
+
+        #toggleButton{
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+            cursor: pointer;
+            background-color: #ffffff;
+            color: #0f0f0f;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            border: 2px solid #010101;
+            cursor: pointer;
+        
+            transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+
+        }
+
+        #backButton {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+            cursor: pointer;
+            background-color: #ffffff;
+            color: #0f0f0f;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            border: 2px solid #010101;
+            cursor: pointer;
+        
+            transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+      
+        }
+
+        #toggleButton:hover {
+            background-color: #8c8c8b;
+            transform: translateY(-2px);
+        }
+
+        #backButton:hover {
+            background-color: #8c8c8b;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <!-- Content area on the index page -->
+        <video id="video" autoplay playsinline ></video>
+    </div>
+     <!-- Screencast Script -->
+    <script>
+    let stream;
+    let isScreenCasting = false;
+
+       // Function to change content based on the content parameter
+       function changeContent() {
+            const contentDiv = document.getElementById('content');
+            const contentParam = getContentParameter();
+
+            // Display different content based on the content parameter
+            if (contentParam === 'content1') {
+                contentDiv.innerHTML = '<h1 id="H1">Show PPT!</h1>' +
+'<button id="backButton_ppt" onclick="goBack()">Back to Main Page</button>' +
+'<label  for="imageFiles" id="addImagesButton_ppt">Add Images</label>' +
+'<input type="file" id="imageFiles" accept="image/*" multiple onchange="handleImageFiles()">' +
+'<button  id="playSlideshowButton_ppt" onclick="playSlideshow()">Play Slideshow</button>' +
+'<div id="imageContainer"></div>';
+
+            } else if (contentParam === 'content2') {
+                contentDiv.innerHTML =  '<video id="video" autoplay playsinline ></video>';
+                // Call the function containing script code
+                window.onload=function(){
+                startScreenCasting()
+            }
+            }
+        }
+
+        // Function to extract the content parameter from the URL
+        function getContentParameter() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('content');
+        }
+
+        // Function containing script code
+        function includeVideoScript() {
+            windows.onload=function(){
+                startScreenCasting();
+            };
+        }
+        
+        // Call the function to change content when the page loads
+        changeContent();
+    
+    
+    function startScreenCasting() {
+        navigator.mediaDevices.getDisplayMedia({ video:true , audio:true})
+            .then((s) => {
+                stream = s;
+                const videoElement = document.getElementById('video');
+                videoElement.srcObject = stream;
+    
+                // Request full screen immediately after setting srcObject
+                if (videoElement.requestFullscreen) {
+                    videoElement.requestFullscreen();
+                } else if (videoElement.mozRequestFullScreen) {
+                    videoElement.mozRequestFullScreen();
+                } else if (videoElement.webkitRequestFullscreen) {
+                    videoElement.webkitRequestFullscreen();
+                }
+    
+                videoElement.play(); // Start playing the video
+    
+                stream.getVideoTracks()[0].addEventListener('ended', handleStreamEnded);
+                isScreenCasting = true;
+               
+            })
+            .catch((error) => { 
+                if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
+                // User canceled screen sharing
+                handleCancelScreenSharing();
+                } else {
+                    // Other errors
+                    console.error('Error starting screen casting:', error);
+                }
+                        });
+        }
+    
+    
+    function handleCancelScreenSharing() {
+    // Function to run when user cancels screen sharing dialog
+    window.location.href = 'c:/piproject/test/index.html';
+    // Add your code here
+    }
+    function handleStreamEnded() {
+        // Handle any cleanup or UI changes after screen casting ends
+        isScreenCasting = false;
+        window.location.href = 'c:/piproject/test/index.html';
+    }
+    
+
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullScreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullScreenChange);
+    
+    function handleFullScreenChange() {
+        const isFullScreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+    
+        if (isFullScreen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+
+    function goBack() {
+    window.location.href = 'c:/piproject/test/index.html';
+  }
+
+  function handleImageFiles() {
+    const imageFilesInput = document.getElementById('imageFiles');
+    const imageContainer = document.getElementById('imageContainer');
+
+    imageContainer.innerHTML = ''; // Clear previous images
+
+    const files = imageFilesInput.files;
+    for (const file of files) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const imageSrc = e.target.result;
+        const imageElement = document.createElement('img');
+        imageElement.src = imageSrc;
+        imageElement.classList.add('imageSlide');
+
+        // Append the image to the container
+        imageContainer.appendChild(imageElement);
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    // Upload images to the server
+    uploadImagesToServer(files);
+  }
+
+  function uploadImagesToServer(files) {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('images', file);
+    }
+
+    // Make a POST request to your server to handle the image upload
+    fetch('http://localhost:3000/image', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Images uploaded to server:', data);
+    })
+    .catch(error => {
+      console.error('Error uploading images:', error);
+    });
+  }
+
+  function playSlideshow() {
+    // Hide the buttons
+    document.getElementById('backButton_ppt').style.display = 'none';
+    document.getElementById('addImagesButton_ppt').style.display = 'none';
+    document.getElementById('playSlideshowButton_ppt').style.display = 'none';
+    document.getElementById('H1').style.display = 'none';
+
+    // Select all elements with the class 'imageSlide'
+    const imageSlides = document.querySelectorAll('.imageSlide');
+   
+    // Set CSS styles for the body to cover the entire page
+    document.body.style.margin = '0';
+    document.body.style.overflow = 'hidden';
+
+    // Check if there are any image slides found
+    if (imageSlides.length > 0) {
+        let currentIndex = 0;
+
+        // Set up an interval to change slides every 2 seconds
+        const intervalId = setInterval(function () {
+            // Hide the current slide
+            imageSlides[currentIndex].style.display = 'none';
+
+            // Move to the next slide (looping back to the start if needed)
+            currentIndex = (currentIndex + 1) % imageSlides.length;
+
+            // Show the next slide
+            imageSlides[currentIndex].style.display = 'block';
+        }, 2000); // Change slide every 2 seconds (adjust as needed)
+
+        // Stop the slideshow after all images are shown once
+        setTimeout(function () {
+            clearInterval(intervalId);
+        }, 2000 * imageSlides.length); // Stop after the total time for all slides has elapsed
+    } else {
+        // Display an alert if there are no image slides found
+        alert('No images to display. Please add images.');
+        var lineBreak = document.createElement('br');
+        document.getElementById('backButton_ppt').style.display = 'inline';
+    document.getElementById('addImagesButton_ppt').style.display = 'inline';
+    document.getElementById('playSlideshowButton_ppt').style.display = 'inline';
+    document.getElementById('H1').style.display = 'inline';
+    }
+}
+
+  </script>
+
+    
+</body>
+</html>
